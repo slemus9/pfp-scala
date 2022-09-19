@@ -9,6 +9,7 @@ val derevoVersion = "0.13.0"
 val tofuCoreHKVersion = "0.10.8"
 val squantVersion = "1.6.0"
 val log4catsVersion = "2.5.0"
+val circeVersion = "0.14.1"
 val http4sVersion = "0.23.16"
 val http4sJwtAuthVersion = "1.0.0"
 
@@ -30,12 +31,16 @@ lazy val root = (project in file("."))
       "eu.timepit"    %% "refined-cats"          % refinedVersion,
       "tf.tofu"       %% "derevo-cats"           % derevoVersion,
       "tf.tofu"       %% "derevo-cats-tagless"   % derevoVersion,
-      "tf.tofu"       %% "derevo-circe-magnolia" % derevoVersion,
+      //"tf.tofu"       %% "derevo-circe-magnolia" % derevoVersion,
       "tf.tofu"       %% "tofu-core-higher-kind" % tofuCoreHKVersion,
       "org.typelevel"  %% "squants"  % squantVersion,
       "org.typelevel" %% "log4cats-slf4j" % log4catsVersion,
+      "io.circe" %% "circe-core" % circeVersion,
+      "io.circe" %% "circe-generic" % circeVersion,
+      "io.circe" %% "circe-parser" % circeVersion,
       "org.http4s" %% "http4s-dsl" % http4sVersion,
       "org.http4s" %% "http4s-ember-server" % http4sVersion,
+      "org.http4s"  %% "http4s-circe"         % http4sVersion,
       "dev.profunktor" %% "http4s-jwt-auth" % http4sJwtAuthVersion
     ),
     scalacOptions ++= Seq(
