@@ -1,31 +1,31 @@
-package shopping.api
+package shopping.api.routes
 
 import org.http4s.dsl._
 import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.HttpRoutes
 import org.http4s.server.Router
 import cats.Monad
-import shopping.service.BrandService
+import shopping.service.CategoryService
 
-object BrandRoutes {
+object CategoryRoutes {
 
-  private[api] val prefixPath = "/brands"
+  private[routes] val prefixPath = "/categories"
 
   private def routes [F[_]: Monad] (
-    brands: BrandService[F]
+    categories: CategoryService[F]
   ): HttpRoutes[F] = {
-    
+
     val dsl = Http4sDsl[F]
     import dsl._
 
     HttpRoutes.of[F] {
-      case GET -> Root => Ok(brands.findAll)
+      case GET -> Root => Ok(categories.findAll)
     }
   }
 
   def router [F[_]: Monad] (
-    brands: BrandService[F]
+    categories: CategoryService[F]
   ) = Router[F](
-    prefixPath -> routes(brands)
+    prefixPath -> routes(categories)
   )
 }

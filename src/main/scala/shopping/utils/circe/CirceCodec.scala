@@ -1,6 +1,7 @@
 package shopping.utils.circe
 
 import io.circe.{Encoder, Decoder, Codec}
+import io.circe.Json
 
 object CirceCodec {
 

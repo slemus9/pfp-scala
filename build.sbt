@@ -40,6 +40,7 @@ lazy val root = (project in file("."))
       "io.circe" %% "circe-parser" % circeVersion,
       "org.http4s" %% "http4s-dsl" % http4sVersion,
       "org.http4s" %% "http4s-ember-server" % http4sVersion,
+      "org.http4s" %% "http4s-ember-client" % http4sVersion,
       "org.http4s"  %% "http4s-circe"         % http4sVersion,
       "dev.profunktor" %% "http4s-jwt-auth" % http4sJwtAuthVersion
     ),

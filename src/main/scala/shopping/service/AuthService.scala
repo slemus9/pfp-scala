@@ -1,6 +1,7 @@
 package shopping.service
 
 import shopping.domain.user._
+import dev.profunktor.auth.jwt.JwtToken
 
 trait AuthService [F[_]] {
 

@@ -1,5 +1,6 @@
 package shopping.domain
 
+import io.circe.generic.semiauto.deriveEncoder
 import monocle.Iso
 import io.circe.Encoder
 import derevo.derive
@@ -27,11 +28,25 @@ object health {
   @newtype
   final case class RedisStatus (value: Status)
 
+  object RedisStatus {
+    implicit val jsonEncoder = 
+      Encoder[Status].contramap[RedisStatus](_.value)
+  }
+
   @newtype
   final case class PostgresStatus (value: Status)
+
+  object PostgresStatus {
+    implicit val jsonEncoder = 
+      Encoder[Status].contramap[PostgresStatus](_.value)
+  }
 
   final case class AppStatus (
     redis: RedisStatus,
     postgres: PostgresStatus
   )
+
+  object AppStatus {
+    implicit val jsonEncoder = deriveEncoder[AppStatus]
+  }
 }

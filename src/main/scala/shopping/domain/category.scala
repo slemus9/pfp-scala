@@ -1,6 +1,6 @@
 package shopping.domain
 
-import io.circe.generic.semiauto.deriveCodec
+import io.circe.generic.JsonCodec
 import io.estatico.newtype.macros.newtype
 import java.util.UUID
 import shopping.utils.circe.CirceCodec
@@ -23,9 +23,6 @@ object category {
     )
   }
 
+  @JsonCodec
   final case class Category (uuid: CategoryId, name: CategoryName) 
-
-  object Category {
-    implicit val jsonEncoder = deriveCodec[Category]
-  }
 }
