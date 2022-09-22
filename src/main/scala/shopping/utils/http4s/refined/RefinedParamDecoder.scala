@@ -1,9 +1,10 @@
-package shopping.utils.refined
+package shopping.utils.http4s.refined
 
 import org.http4s.QueryParamDecoder
 import eu.timepit.refined.api.{Validate, Refined}
 import eu.timepit.refined.refineV
 import org.http4s.ParseFailure
+import shopping.utils.derevo.Derive
 
 object RefinedParamDecoder {
 
@@ -13,3 +14,5 @@ object RefinedParamDecoder {
     refineV[P](_).left.map(e => ParseFailure(e, e))
   }
 }
+
+object queryParam extends Derive[QueryParamDecoder]

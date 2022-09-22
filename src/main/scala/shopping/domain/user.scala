@@ -11,10 +11,12 @@ import scala.util.control.NoStackTrace
 import io.circe.{Decoder, Codec}
 import cats.syntax.either._
 import derevo.derive
-import derevo.cats._
+import derevo.cats.{eqv, show}
+import shopping.utils.uuid.IsUUID.uuid
 
 object user {
 
+  @derive(eqv, show, uuid)
   @newtype final case class UserId (value: UUID)
 
   object UserId {
@@ -31,7 +33,7 @@ object user {
   //   )
   // }
 
-  @derive(show)
+  @derive(eqv, show)
   @newtype final case class UserName (value: String)
 
   object UserName {
@@ -40,6 +42,7 @@ object user {
     )
   }
 
+  @derive(eqv, show)
   @newtype final case class Password (value: String)
 
   object Password {
@@ -48,6 +51,7 @@ object user {
     )
   }
 
+  @derive(eqv, show)
   @newtype final case class EncryptedPassword (value: String)
 
   object EncryptedPassword {
@@ -56,6 +60,7 @@ object user {
     )
   }
 
+  @derive(eqv, show)
   final case class User (
     id: UserId,
     name: UserName
@@ -65,6 +70,7 @@ object user {
     implicit val jsonCodec = deriveCodec[User]
   }
 
+  @derive(eqv, show)
   final case class UserWithPassword (
     id: UserId,
     name: UserName,
@@ -75,12 +81,14 @@ object user {
     implicit val jsonCodec = deriveCodec[UserWithPassword]
   }
 
+  @derive(eqv, show)
   final case class CommonUser (value: User)
 
   object CommonUser {
     implicit val jsonCodec = deriveCodec[CommonUser]
   }
 
+  @derive(eqv, show)
   final case class AdminUser (value: User)
 
   object AdminUser {

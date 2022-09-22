@@ -11,9 +11,13 @@ import eu.timepit.refined.types.string.NonEmptyString
 import eu.timepit.refined.collection.NonEmpty
 import org.http4s.QueryParamDecoder
 import org.http4s.ParseFailure
+import derevo.derive
+import derevo.cats.{eqv, show}
+import shopping.utils.uuid.IsUUID.uuid
 
 object brand {
 
+  @derive(eqv, show, uuid)
   @newtype final case class BrandId (value: UUID)
 
   object BrandId {
@@ -22,6 +26,7 @@ object brand {
     )
   }
 
+  @derive(eqv, show)
   @newtype final case class BrandName (value: String)
 
   object BrandName{
@@ -30,6 +35,7 @@ object brand {
     )
   }
 
+  @derive(eqv, show)
   final case class Brand (uuid: BrandId, name: BrandName)
 
   object Brand {
@@ -47,6 +53,7 @@ object brand {
     implicit val jsonCodec: Codec[BrandParam] = 
       codecOf[String, NonEmpty].iemap (BrandParam(_).asRight) (_.value)
 
+    // TODO: Replace with automatic derivation
     implicit val paramDecoder: QueryParamDecoder[BrandParam] =
       QueryParamDecoder[String].emap { 
         NonEmptyString.from(_).bimap(

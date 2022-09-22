@@ -16,9 +16,13 @@ import eu.timepit.refined.types.string.NonEmptyString
 import eu.timepit.refined.string.{Uuid, ValidBigDecimal}
 import eu.timepit.refined.collection.NonEmpty
 import eu.timepit.refined.api.Refined
+import derevo.derive
+import derevo.cats.{eqv, show}
+import shopping.utils.uuid.IsUUID.uuid
 
 object item {
 
+  @derive(eqv, show, uuid)
   @newtype final case class ItemId (value: UUID)
 
   object ItemId {
@@ -34,6 +38,7 @@ object item {
     }
   }
 
+  @derive(eqv, show)
   @newtype final case class ItemName (value: String)
 
   object ItemName {
@@ -42,6 +47,7 @@ object item {
     )
   }
 
+  @derive(eqv, show)
   @newtype final case class ItemDescription (value: String)
 
   object ItemDescription {
@@ -50,6 +56,7 @@ object item {
     )
   }
 
+  @derive(eqv, show)
   final case class Item (
     uuid: ItemId,
     name: ItemName,

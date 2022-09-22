@@ -9,12 +9,14 @@ import java.util.UUID
 import io.estatico.newtype.macros.newtype
 import squants.market.Money
 import scala.util.control.NoStackTrace
-import derevo.derive
-import derevo.cats.show
 import io.circe.Encoder
+import derevo.derive
+import derevo.cats.{eqv, show}
+import shopping.utils.uuid.IsUUID.uuid
 
 object order {
 
+  @derive(eqv, show, uuid)
   @newtype final case class OrderId (value: UUID)
 
   object OrderId {
@@ -23,7 +25,7 @@ object order {
     )
   }
 
-  @derive(show)
+  @derive(eqv, show, uuid)
   @newtype 
   final case class PaymentId (value: UUID)
 
@@ -45,10 +47,10 @@ object order {
   }
 
   // Errors
-  @derive(show)
+  @derive(eqv, show)
   case object EmptyCartError extends NoStackTrace
 
-  @derive(show)
+  @derive(eqv, show)
   sealed trait OrderOrPaymentError extends NoStackTrace
 
   final case class PaymentError (message: String) extends OrderOrPaymentError
