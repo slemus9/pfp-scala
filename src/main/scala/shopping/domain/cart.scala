@@ -6,11 +6,14 @@ import shopping.utils.circe.CirceCodec
 import shopping.utils.circe.USDMoneyCodec._
 import shopping.domain.item._
 import io.estatico.newtype.macros.newtype
-import squants.market.Money
+import squants.market.{Money, USD}
 import scala.util.control.NoStackTrace
+import derevo.derive
+import derevo.cats.{eqv, show}
 
 object cart {
 
+  @derive(eqv, show)
   @newtype final case class Quantity (value: Int)
 
   object Quantity {
@@ -19,6 +22,7 @@ object cart {
     )
   }
 
+  @derive(eqv, show)
   @newtype final case class Cart (items: Map[ItemId, Quantity])
 
   object Cart {
@@ -29,12 +33,18 @@ object cart {
       Decoder.forProduct1("items")(Cart(_))
   }
 
-  final case class CartItem (item: Item, quantity: Quantity)
+  @derive(eqv, show)
+  final case class CartItem (item: Item, quantity: Quantity) {
+    def subTotal: Money = USD(
+      item.price.amount * quantity.value
+    )
+  }
 
   object CartItem {
     implicit val jsonCodec = deriveCodec[CartItem]
   }
 
+  @derive(eqv, show)
   final case class CartTotal (items: List[CartItem], total: Money)
 
   object CartTotal {

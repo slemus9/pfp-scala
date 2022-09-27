@@ -12,6 +12,8 @@ val log4catsVersion = "2.5.0"
 val circeVersion = "0.14.1"
 val http4sVersion = "0.23.16"
 val http4sJwtAuthVersion = "1.0.0"
+val skunkVersion = "0.2.3"
+val redis4catsVersion = "1.2.0"
 
 lazy val root = (project in file("."))
   .settings(
@@ -38,12 +40,16 @@ lazy val root = (project in file("."))
       "io.circe" %% "circe-core" % circeVersion,
       "io.circe" %% "circe-generic" % circeVersion,
       "io.circe" %% "circe-parser" % circeVersion,
-      "io.circe" %% "circe-refined" % circeVersion,
+      //"io.circe" %% "circe-refined" % circeVersion,
       "org.http4s" %% "http4s-dsl" % http4sVersion,
       "org.http4s" %% "http4s-ember-server" % http4sVersion,
       "org.http4s" %% "http4s-ember-client" % http4sVersion,
       "org.http4s"  %% "http4s-circe"         % http4sVersion,
-      "dev.profunktor" %% "http4s-jwt-auth" % http4sJwtAuthVersion
+      "dev.profunktor" %% "http4s-jwt-auth" % http4sJwtAuthVersion,
+      "org.tpolecat" %% "skunk-core" % skunkVersion,
+      "org.tpolecat" %% "skunk-circe" % skunkVersion,
+      "dev.profunktor" %% "redis4cats-effects"  % redis4catsVersion,
+      "dev.profunktor" %% "redis4cats-log4cats" % redis4catsVersion
     ),
     scalacOptions ++= Seq(
       "-Ymacro-annotations", "-Wconf:cat=unused:info"

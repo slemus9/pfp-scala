@@ -1,7 +1,7 @@
 package shopping
 
 import cats.syntax.contravariant._
-import cats.{Eq, Show}
+import cats.{Eq, Show, Monoid}
 import io.circe.{Encoder, Decoder}
 import squants.market.{Money, USD, Currency}
 import dev.profunktor.auth.jwt.JwtToken
@@ -15,6 +15,13 @@ trait OrphanInstances {
 
   implicit val moneyDecoder: Decoder[Money] =
     Decoder[BigDecimal].map(USD(_))
+
+  implicit val moneyMonoid: Monoid[Money] = new Monoid[Money] {
+
+    def empty: Money = USD(0)
+
+    def combine (x: Money, y: Money): Money = x + y
+  }
 
   implicit val currencyEq: Eq[Currency] =
     Eq.and(
