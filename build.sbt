@@ -1,5 +1,6 @@
 ThisBuild / scalaVersion  := "2.13.8"
 
+// Dependency versions
 val catsMltVersion = "1.3.0"
 val catsRetryVersion = "3.1.0"
 val monocleVersion = "3.1.0"
@@ -17,7 +18,13 @@ val redis4catsVersion = "1.2.0"
 
 lazy val root = (project in file("."))
   .settings(
-    name  := "minimal",
+    name := "shopping-cart"
+  )
+  .aggregate(core)
+
+lazy val core = (project in file("modules/core"))
+  .settings(
+    name  := "shopping-cart-core",
     libraryDependencies  ++= Seq(
       compilerPlugin(
         "org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full
@@ -55,3 +62,12 @@ lazy val root = (project in file("."))
       "-Ymacro-annotations", "-Wconf:cat=unused:info"
     )
   )
+
+lazy val tests = (project in file("modules/tests"))
+  .settings(
+    name := "shopping-cart-tests",
+    scalacOptions ++= Seq(
+      "-Ymacro-annotations", "-Wconf:cat=unused:info"
+    )
+  )
+  .dependsOn(core)
