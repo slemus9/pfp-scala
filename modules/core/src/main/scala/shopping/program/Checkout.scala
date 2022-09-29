@@ -71,6 +71,6 @@ final case class Checkout [F[_]: MonadThrow: Retry: Logger: Background] (
       its <- ensureNonEmpty(c.items)
       pid <- processPayment(Payment(userId, c.total, card))
       oid <- createOrder(userId, pid, its, c.total)
-      _   <- cart.delete(userId)
+      _   <- cart.delete(userId).attempt.void
     } yield oid
 }

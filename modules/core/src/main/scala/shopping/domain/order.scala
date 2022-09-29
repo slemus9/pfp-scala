@@ -35,6 +35,7 @@ object order {
     )
   }
 
+  @derive(eqv, show)
   final case class Order (
     id: OrderId,
     pid: PaymentId,

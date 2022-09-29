@@ -1,6 +1,7 @@
 ThisBuild / scalaVersion  := "2.13.8"
 
 // Dependency versions
+val catsVersion = "2.8.0"
 val catsMltVersion = "1.3.0"
 val catsRetryVersion = "3.1.0"
 val monocleVersion = "3.1.0"
@@ -15,6 +16,9 @@ val http4sVersion = "0.23.16"
 val http4sJwtAuthVersion = "1.0.0"
 val skunkVersion = "0.2.3"
 val redis4catsVersion = "1.2.0"
+
+// Testing Dependency versions
+val weaverCatsVersion        = "0.8.0"
 
 lazy val root = (project in file("."))
   .settings(
@@ -38,6 +42,7 @@ lazy val core = (project in file("modules/core"))
       "io.estatico"   %% "newtype"               % newtypeVersion,
       "eu.timepit"    %% "refined"               % refinedVersion,
       "eu.timepit"    %% "refined-cats"          % refinedVersion,
+      "tf.tofu"       %% "derevo-core"           % derevoVersion,
       "tf.tofu"       %% "derevo-cats"           % derevoVersion,
       "tf.tofu"       %% "derevo-cats-tagless"   % derevoVersion,
       //"tf.tofu"       %% "derevo-circe-magnolia" % derevoVersion,
@@ -68,6 +73,16 @@ lazy val tests = (project in file("modules/tests"))
     name := "shopping-cart-tests",
     scalacOptions ++= Seq(
       "-Ymacro-annotations", "-Wconf:cat=unused:info"
+    ),
+    testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
+    libraryDependencies ++= Seq(
+      "org.typelevel"       %% "cats-laws"          % catsVersion,
+      "org.typelevel"       %% "log4cats-noop"      % log4catsVersion,
+      "dev.optics"          %% "monocle-law"        % monocleVersion,
+      "eu.timepit"          %% "refined-scalacheck" % refinedVersion,
+      "com.disneystreaming" %% "weaver-cats"        % weaverCatsVersion,
+      "com.disneystreaming" %% "weaver-discipline"  % weaverCatsVersion,
+      "com.disneystreaming" %% "weaver-scalacheck"  % weaverCatsVersion
     )
   )
   .dependsOn(core)

@@ -1,5 +1,6 @@
 package shopping.domain
 
+import eu.timepit.refined.cats._
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.string.{MatchesRegex, ValidInt}
 import eu.timepit.refined.collection.{Size, NonEmpty}
@@ -10,6 +11,8 @@ import shopping.utils.circe.refined.codecOf
 import io.circe.generic.semiauto.deriveCodec
 import io.circe.{Encoder, Decoder, Codec}
 import cats.syntax.either._
+import derevo.derive
+import derevo.cats.show
 
 object checkout {
 
@@ -25,6 +28,7 @@ object checkout {
   type CardCVVPred = Equal[3]
 
   // Models
+  @derive(show)
   @newtype final case class CardName (value: String Refined CardNamePred)
 
   object CardName {
@@ -32,6 +36,7 @@ object checkout {
       codecOf[String, CardNamePred].iemap (CardName(_).asRight) (_.value)
   }
 
+  @derive(show)
   @newtype final case class CardNumber (value: Long Refined CardNumberPred)
 
   object CardNumber {
@@ -39,6 +44,7 @@ object checkout {
       codecOf[Long, Equal[16]].iemap (CardNumber(_).asRight) (_.value)
   }
 
+  @derive(show)
   @newtype final case class CardExpiration (value: String Refined CardExpirationPred)
 
   object CardExpiration {
@@ -46,6 +52,7 @@ object checkout {
       codecOf[String, CardExpirationPred].iemap (CardExpiration(_).asRight) (_.value)
   }
 
+  @derive(show)
   @newtype final case class CardCVV (value: Int Refined CardCVVPred)
 
   object CardCVV {
@@ -53,6 +60,7 @@ object checkout {
       codecOf[Int, CardCVVPred].iemap (CardCVV(_).asRight) (_.value)
   } 
 
+  @derive(show)
   final case class Card (
     name: CardName,
     number: CardNumber,
