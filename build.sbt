@@ -24,11 +24,12 @@ lazy val root = (project in file("."))
   .settings(
     name := "shopping-cart"
   )
-  .aggregate(core)
+  .aggregate(core, tests)
 
 lazy val core = (project in file("modules/core"))
   .settings(
     name  := "shopping-cart-core",
+    Defaults.itSettings,
     libraryDependencies  ++= Seq(
       compilerPlugin(
         "org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full
@@ -69,12 +70,14 @@ lazy val core = (project in file("modules/core"))
   )
 
 lazy val tests = (project in file("modules/tests"))
+  .configs(IntegrationTest)
   .settings(
     name := "shopping-cart-tests",
     scalacOptions ++= Seq(
       "-Ymacro-annotations", "-Wconf:cat=unused:info"
     ),
     testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
+    Defaults.itSettings,
     libraryDependencies ++= Seq(
       "org.typelevel"       %% "cats-laws"          % catsVersion,
       "org.typelevel"       %% "log4cats-noop"      % log4catsVersion,

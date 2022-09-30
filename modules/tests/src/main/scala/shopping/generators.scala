@@ -154,6 +154,19 @@ object generators {
   val commonUserGen: Gen[CommonUser] =
     userGen.map(CommonUser(_))
 
+  val passwordGen: Gen[Password] =
+    nesGen(Password.apply)
+
+  val encryptedPasswordGen: Gen[EncryptedPassword] =
+    nesGen(EncryptedPassword.apply)
+
+  val userWithPasswordGen: Gen[UserWithPassword] =
+    for {
+      id   <- userIdGen
+      name <- userNameGen
+      pass <- encryptedPasswordGen
+    } yield UserWithPassword(id, name, pass)
+
   // Order generators
 
   val orderIdGen: Gen[OrderId] =
