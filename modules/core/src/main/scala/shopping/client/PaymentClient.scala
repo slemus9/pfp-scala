@@ -27,7 +27,7 @@ object PaymentClient {
     val dsl = Http4sClientDsl[F]
     import dsl._
 
-    val baseUri = "http://localhost:8080/api/v1"
+    val baseUri = "http://localhost:8080"
 
     implicit val entityDecoder = jsonDecoder
 

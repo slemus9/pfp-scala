@@ -5,12 +5,15 @@ import monocle.Iso
 import io.circe.Encoder
 import derevo.derive
 import io.estatico.newtype.macros.newtype
+import derevo.cats.{eqv, show}
 
 object health {
 
+  @derive(eqv, show)
   sealed trait Status
   object Status {
 
+    
     case object Okay extends Status
     case object Unreachable extends Status
 
@@ -25,6 +28,7 @@ object health {
       Encoder.forProduct1("status")(_.toString)
   }
 
+  @derive(eqv, show)
   @newtype
   final case class RedisStatus (value: Status)
 
@@ -33,6 +37,7 @@ object health {
       Encoder[Status].contramap[RedisStatus](_.value)
   }
 
+  @derive(eqv, show)
   @newtype
   final case class PostgresStatus (value: Status)
 
@@ -41,6 +46,7 @@ object health {
       Encoder[Status].contramap[PostgresStatus](_.value)
   }
 
+  @derive(eqv, show)
   final case class AppStatus (
     redis: RedisStatus,
     postgres: PostgresStatus
