@@ -16,6 +16,7 @@ val http4sVersion = "0.23.16"
 val http4sJwtAuthVersion = "1.0.0"
 val skunkVersion = "0.2.3"
 val redis4catsVersion = "1.2.0"
+val cirisVersion = "2.4.0"
 
 // Testing Dependency versions
 val weaverCatsVersion        = "0.8.0"
@@ -62,7 +63,10 @@ lazy val core = (project in file("modules/core"))
       "org.tpolecat" %% "skunk-core" % skunkVersion,
       "org.tpolecat" %% "skunk-circe" % skunkVersion,
       "dev.profunktor" %% "redis4cats-effects"  % redis4catsVersion,
-      "dev.profunktor" %% "redis4cats-log4cats" % redis4catsVersion
+      "dev.profunktor" %% "redis4cats-log4cats" % redis4catsVersion,
+      "is.cir" %% "ciris" % cirisVersion,
+      "is.cir" %% "ciris-enumeratum" % cirisVersion,
+      "is.cir" %% "ciris-refined" % cirisVersion
     ),
     scalacOptions ++= Seq(
       "-Ymacro-annotations", "-Wconf:cat=unused:info"

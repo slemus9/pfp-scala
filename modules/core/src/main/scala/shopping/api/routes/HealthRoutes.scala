@@ -14,7 +14,7 @@ object HealthRoutes {
 
   private[routes] val prefixPath = "/healthcheck"
 
-  private def router [F[_]: Monad] (
+  def router [F[_]: Monad] (
     healthCheck: HealthService[F]
   ): HttpRoutes[F] = {
 

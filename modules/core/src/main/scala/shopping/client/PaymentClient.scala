@@ -20,6 +20,7 @@ trait PaymentClient [F[_]] {
 
 object PaymentClient {
 
+  // TODO: add configuration parameter
   def make [F[_]: Concurrent: JsonDecoder] (
     client: Client[F]
   ): PaymentClient[F] = new PaymentClient[F] {

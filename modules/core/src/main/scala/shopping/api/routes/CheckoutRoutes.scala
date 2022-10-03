@@ -49,4 +49,12 @@ object CheckoutRoutes {
         }
     }
   }
+
+  def securedRouter [F[_]: MonadThrow: JsonDecoder] (
+    checkout: Checkout[F]
+  ) (
+    authMiddleware: AuthMiddleware[F, CommonUser]
+  ): HttpRoutes[F] = Router(
+    prefixPath -> authMiddleware(routes(checkout))
+  )
 }
