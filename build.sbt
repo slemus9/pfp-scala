@@ -11,6 +11,7 @@ val derevoVersion = "0.13.0"
 val tofuCoreHKVersion = "0.10.8"
 val squantVersion = "1.6.0"
 val log4catsVersion = "2.5.0"
+val logbackVersion = "1.4.3"
 val circeVersion = "0.14.1"
 val http4sVersion = "0.23.16"
 val http4sJwtAuthVersion = "1.0.0"
@@ -51,6 +52,7 @@ lazy val core = (project in file("modules/core"))
       "tf.tofu"       %% "tofu-core-higher-kind" % tofuCoreHKVersion,
       "org.typelevel"  %% "squants"  % squantVersion,
       "org.typelevel" %% "log4cats-slf4j" % log4catsVersion,
+      "ch.qos.logback" % "logback-classic" % logbackVersion,
       "io.circe" %% "circe-core" % circeVersion,
       "io.circe" %% "circe-generic" % circeVersion,
       "io.circe" %% "circe-parser" % circeVersion,

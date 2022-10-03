@@ -58,7 +58,7 @@ object HttpApi {
     private val securedAdminRoutes: HttpRoutes[F] = List(
       BrandRoutes.adminRouter(services.brands) _,
       ItemRoutes.adminRouter(services.items) _,
-    ).foldMapK {r => r(adminMiddleware) }
+    ).foldMapK { r => r(adminMiddleware) }
 
     private val middleware: HttpRoutes[F] => HttpRoutes[F] = http => 
       AutoSlash(http) >> CORS(http) >> Timeout (60.seconds) (http)
