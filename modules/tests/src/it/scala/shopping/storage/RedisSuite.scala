@@ -15,10 +15,22 @@ import shopping.domain.brand._
 import shopping.domain.category._
 import shopping.domain.item._
 import shopping.domain.cart._
+import shopping.domain.user._
+import shopping.config.types._
 import shopping.service.ItemService
 import shopping.domain.brand
 import shopping.domain.id.ID
 import shopping.service.ShoppingCartService
+import shopping.service.UserService
+import eu.timepit.refined.auto._
+import java.util.UUID
+import pdi.jwt.{JwtClaim, JwtAlgorithm}
+import shopping.api.auth.tokens._
+import shopping.auth.JwtExpire
+import shopping.auth.Tokens
+import shopping.auth.Crypto
+import shopping.service.AuthService
+import shopping.service.UserAuthService
 
 object RedisSuite extends ResourceSuite {
 
@@ -27,6 +39,10 @@ object RedisSuite extends ResourceSuite {
   implicit val logger = NoOpLogger[IO]
 
   val expiration = ShoppingCartExpiration(30.seconds)
+  val tokenConfig = JwtAccessTokenKeyConfig("bar")
+  val tokenExp    = TokenExpiration(30.seconds)
+  val jwtClaim    = JwtClaim("test")
+  val userJwtAuth = UserJwtAuth(JwtAuth.hmac("bar", JwtAlgorithm.HS256))
 
   def sharedResource: Resource[IO, Res] = 
     Redis[IO]
@@ -72,9 +88,49 @@ object RedisSuite extends ResourceSuite {
       }
     }
   }
+
+  test ("Authentication") { redis => 
+
+    val gen = for {
+      un1 <- userNameGen
+      un2 <- userNameGen
+      pw <- passwordGen
+    } yield (un1, un2, pw)
+
+    forall (gen) { case (un1, un2, pw) =>
+
+      for {
+        jwtExpire <- JwtExpire.make[IO].map {
+          Tokens.make[IO](_, tokenConfig, tokenExp)
+        }
+        crypto    <- Crypto.make[IO](PasswordSalt("test"))
+        auth      =  AuthService.make(
+          tokenExp, jwtExpire, new TestUserService(un2), redis, crypto
+        )
+        usersAuth =  UserAuthService.common(redis)
+        invUser   <- usersAuth.findUser (JwtToken("invalid")) (jwtClaim)
+        login1    <- auth.login(un1, pw).attempt
+        token1    <- auth.newUser(un1, pw)
+        decode1   <- jwtDecode(token1, userJwtAuth.value).attempt
+        login2    <- auth.login(un2, pw).attempt
+        user1     <- usersAuth.findUser (token1) (jwtClaim)
+        x         <- redis.get(token1.value)
+        _         <- auth.logout(token1, un1)
+        y         <- redis.get(token1.value)
+      } yield expect.all(
+        invUser.isEmpty,
+        login1 == Left(UserNotFound(un1)),
+        decode1.isRight,
+        login2 == Left(InvalidPassword(un2)),
+        user1.fold (false) (_.value.name === un1),
+        x.nonEmpty,
+        y.isEmpty
+      )
+    }
+  }
 }
 
-private class TestItemService (
+protected class TestItemService (
   ref: Ref[IO, Map[ItemId, Item]]
 ) extends ItemService[IO] {
 
@@ -109,4 +165,21 @@ private class TestItemService (
         db.updated(item.id, existingItem.copy(price = item.price))
       }  
     }
+}
+
+protected class TestUserService (expectedUsername: UserName) extends UserService[IO] {
+
+  def find (username: UserName): IO[Option[UserWithPassword]] = IO.pure {
+    (username === expectedUsername)
+      .guard[Option]
+      .as(UserWithPassword(
+        UserId(UUID.randomUUID),
+        expectedUsername,
+        EncryptedPassword("foo")
+      ))
+  }
+
+  def create(username: UserName, password: EncryptedPassword): IO[UserId] = 
+    ID.make[IO, UserId]
+
 }

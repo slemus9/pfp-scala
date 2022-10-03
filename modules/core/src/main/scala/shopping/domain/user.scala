@@ -13,6 +13,7 @@ import cats.syntax.either._
 import derevo.derive
 import derevo.cats.{eqv, show}
 import shopping.utils.uuid.IsUUID.uuid
+import javax.crypto.Cipher
 
 object user {
 
@@ -59,6 +60,12 @@ object user {
       EncryptedPassword(_), _.value
     )
   }
+
+  @newtype
+  case class EncryptCipher(value: Cipher)
+
+  @newtype
+  case class DecryptCipher(value: Cipher)
 
   @derive(eqv, show)
   final case class User (
