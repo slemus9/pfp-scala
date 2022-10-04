@@ -55,13 +55,15 @@ object AuthService {
         
         case Some(user)    => redis.get(username.show).flatMap {
           case Some(token) => JwtToken(token).pure
-          case None        => tokens.create.flatTap { token => 
-            redis.setEx(
-              token.value, user.asJson.noSpaces, tokenExp
-            ) *> redis.setEx(
-              username.show, token.value, tokenExp
-            )
-          }
+          case None        => 
+            val u = User(user.id, user.name)
+            tokens.create.flatTap { token => 
+              redis.setEx(
+                token.value, u.asJson.noSpaces, tokenExp
+              ) *> redis.setEx(
+                username.show, token.value, tokenExp
+              )
+            }
         }
       }
 
@@ -86,6 +88,9 @@ object UserAuthService {
       redis
         .get(token.value)
         .map(_.flatMap { u => 
+          println(token.value)
+          println(u)
+          println(decode[User](u).toOption)
           decode[User](u).toOption.map(CommonUser(_))
         })
   }

@@ -60,12 +60,23 @@ object HttpApi {
       ItemRoutes.adminRouter(services.items) _,
     ).foldMapK { r => r(adminMiddleware) }
 
-    private val middleware: HttpRoutes[F] => HttpRoutes[F] = http => 
-      AutoSlash(http) >> CORS(http) >> Timeout (60.seconds) (http)
-    
-    private val loggers: HttpApp[F] => HttpApp[F] = http => 
-      RequestLogger.httpApp (true, true) (http) >> 
-      ResponseLogger.httpApp (true, true) (http)
+    private val middleware: HttpRoutes[F] => HttpRoutes[F] = {
+      { http: HttpRoutes[F] =>
+        AutoSlash(http)
+      } andThen { http: HttpRoutes[F] =>
+        CORS(http)
+      } andThen { http: HttpRoutes[F] =>
+        Timeout(60.seconds)(http)
+      }
+    }
+
+    private val loggers: HttpApp[F] => HttpApp[F] = {
+      { http: HttpApp[F] =>
+        RequestLogger.httpApp(true, true)(http)
+      } andThen { http: HttpApp[F] =>
+        ResponseLogger.httpApp(true, true)(http)
+      }
+    }
 
     private val routes: HttpRoutes[F] = Router(
       version.v1            -> (openRoutes <+> securedCommonRoutes),

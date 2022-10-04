@@ -29,8 +29,17 @@ lazy val root = (project in file("."))
   .aggregate(core, tests)
 
 lazy val core = (project in file("modules/core"))
+  .enablePlugins(DockerPlugin)
+  //.enablePlugins(JavaAppPackaging)
+  .enablePlugins(AshScriptPlugin)
   .settings(
     name  := "shopping-cart-core",
+    packageName in Docker := "shopping-cart",
+    Compile / mainClass := Some("shopping.Main"),
+    dockerBaseImage  := "openjdk:11-jre-slim-buster",
+    makeBatScripts  := Seq(), // Skip the bat scripts generation
+    dockerExposedPorts ++= Seq(8080),
+    dockerUpdateLatest := true,
     Defaults.itSettings,
     libraryDependencies  ++= Seq(
       compilerPlugin(
@@ -52,7 +61,7 @@ lazy val core = (project in file("modules/core"))
       "tf.tofu"       %% "tofu-core-higher-kind" % tofuCoreHKVersion,
       "org.typelevel"  %% "squants"  % squantVersion,
       "org.typelevel" %% "log4cats-slf4j" % log4catsVersion,
-      "ch.qos.logback" % "logback-classic" % logbackVersion,
+      "ch.qos.logback" % "logback-classic" % logbackVersion % Runtime,
       "io.circe" %% "circe-core" % circeVersion,
       "io.circe" %% "circe-generic" % circeVersion,
       "io.circe" %% "circe-parser" % circeVersion,

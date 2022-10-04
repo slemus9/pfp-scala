@@ -1,3 +1,5 @@
+package shopping
+
 import cats.syntax.all._
 import cats.effect.{IO, IOApp}
 import cats.effect.std.Supervisor
