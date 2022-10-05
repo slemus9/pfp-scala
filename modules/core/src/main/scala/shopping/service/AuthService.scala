@@ -88,9 +88,6 @@ object UserAuthService {
       redis
         .get(token.value)
         .map(_.flatMap { u => 
-          println(token.value)
-          println(u)
-          println(decode[User](u).toOption)
           decode[User](u).toOption.map(CommonUser(_))
         })
   }

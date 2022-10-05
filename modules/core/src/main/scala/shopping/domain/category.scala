@@ -7,6 +7,11 @@ import shopping.utils.circe.CirceCodec
 import derevo.derive
 import derevo.cats.{eqv, show}
 import shopping.utils.uuid.IsUUID.uuid
+import eu.timepit.refined.types.string.NonEmptyString
+import eu.timepit.refined.collection.NonEmpty
+import cats.syntax.either._
+import io.circe.Decoder
+import io.circe.refined._
 
 object category {
 
@@ -33,5 +38,16 @@ object category {
 
   object Category {
     implicit val jsonCodec = deriveCodec[Category]
+  }
+
+  @newtype final case class CategoryParam (value: NonEmptyString) {
+
+    def toDomain = CategoryName(value.value.toLowerCase.capitalize)
+  }
+
+  object CategoryParam {
+
+    implicit val jsonDecoder: Decoder[CategoryParam] = 
+      Decoder.forProduct1 ("name") (CategoryParam(_))
   }
 }

@@ -8,6 +8,7 @@ import eu.timepit.refined.generic.Equal
 import eu.timepit.refined.boolean.And
 import io.estatico.newtype.macros.newtype
 import shopping.utils.circe.refined.codecOf
+import shopping.utils.refined.numeric.IntegralOfSize
 import io.circe.generic.semiauto.deriveCodec
 import io.circe.{Encoder, Decoder, Codec}
 import cats.syntax.either._
@@ -21,7 +22,7 @@ object checkout {
 
   type CardNamePred = MatchesRegex[Rgx]
 
-  type CardNumberPred = Equal[16]
+  type CardNumberPred = IntegralOfSize[16]
 
   type CardExpirationPred = Size[Equal[4]] And ValidInt
 
@@ -41,7 +42,7 @@ object checkout {
 
   object CardNumber {
     implicit val jsonCodec: Codec[CardNumber] =
-      codecOf[Long, Equal[16]].iemap (CardNumber(_).asRight) (_.value)
+      codecOf[Long, CardNumberPred].iemap (CardNumber(_).asRight) (_.value)
   }
 
   @derive(show)

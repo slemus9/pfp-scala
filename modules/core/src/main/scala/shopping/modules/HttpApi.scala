@@ -57,6 +57,7 @@ object HttpApi {
 
     private val securedAdminRoutes: HttpRoutes[F] = List(
       BrandRoutes.adminRouter(services.brands) _,
+      CategoryRoutes.adminRouter(services.categories) _,
       ItemRoutes.adminRouter(services.items) _,
     ).foldMapK { r => r(adminMiddleware) }
 

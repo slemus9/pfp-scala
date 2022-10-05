@@ -2,10 +2,10 @@ package shopping.domain
 
 import cats.syntax.either._
 import io.circe.generic.semiauto.deriveCodec
-import io.circe.{Decoder, Codec}
+import io.circe.Decoder
+import io.circe.refined._
 import io.estatico.newtype.macros.newtype
 import shopping.utils.circe.CirceCodec
-import shopping.utils.circe.refined.codecOf
 import java.util.UUID
 import eu.timepit.refined.types.string.NonEmptyString
 import eu.timepit.refined.collection.NonEmpty
@@ -50,8 +50,8 @@ object brand {
 
   object BrandParam {
     
-    implicit val jsonCodec: Codec[BrandParam] = 
-      codecOf[String, NonEmpty].iemap (BrandParam(_).asRight) (_.value)
+    implicit val jsonDecoder: Decoder[BrandParam] = 
+      Decoder.forProduct1 ("name") (BrandParam(_))
 
     // TODO: Replace with automatic derivation
     implicit val paramDecoder: QueryParamDecoder[BrandParam] =
