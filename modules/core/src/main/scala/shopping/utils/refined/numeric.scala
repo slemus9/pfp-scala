@@ -2,8 +2,8 @@ package shopping.utils.refined
 
 import eu.timepit.refined.api.Validate
 import eu.timepit.refined.internal.WitnessAs
-import eu.timepit.refined.numeric.Positive
 import scala.annotation.tailrec
+import io.circe.Decoder
 
 object numeric {
 

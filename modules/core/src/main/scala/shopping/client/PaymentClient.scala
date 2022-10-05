@@ -12,6 +12,8 @@ import org.http4s.circe.JsonDecoder
 import org.http4s.Uri
 import org.http4s.Method
 import org.http4s.Status
+import shopping.config.types.PaymentConfig
+import com.ongres.scram.common.bouncycastle.base64.Encoder
 
 trait PaymentClient [F[_]] {
 
@@ -22,13 +24,14 @@ object PaymentClient {
 
   // TODO: add configuration parameter
   def make [F[_]: Concurrent: JsonDecoder] (
+    config: PaymentConfig,
     client: Client[F]
   ): PaymentClient[F] = new PaymentClient[F] {
   
     val dsl = Http4sClientDsl[F]
     import dsl._
 
-    val baseUri = "http://localhost:8080"
+    val baseUri = config.uri.value.value
 
     implicit val entityDecoder = jsonDecoder
 
@@ -43,12 +46,13 @@ object PaymentClient {
               case Status.Ok | Status.Conflict => 
                 res.asJsonDecode[PaymentId]
               
-              case status => PaymentError(
-                Option.when 
-                  (!status.reason.isBlank) 
-                  (status.reason) 
-                  .getOrElse("unknown")
-              ).raiseError
+              case status => 
+                PaymentError(
+                  Option.when 
+                    (!status.reason.isBlank) 
+                    (status.reason) 
+                    .getOrElse("unknown")
+                ).raiseError
             }
           }
         }

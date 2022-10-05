@@ -8,11 +8,15 @@ import org.http4s.circe.CirceEntityEncoder._
 import org.http4s.client.Client
 import org.http4s.dsl.io._
 import org.http4s.{HttpRoutes, Response}
+import eu.timepit.refined.auto._
 import shopping.generators._
 import shopping.domain.payment.Payment
 import shopping.domain.order.{PaymentId, PaymentError}
+import shopping.config.types.{PaymentConfig, PaymentURI}
 
 object PaymentClientSuite extends SimpleIOSuite with Checkers {
+
+  val config = PaymentConfig(PaymentURI("http://localhost"))
 
   def routes (makeResponse: IO[Response[IO]]) = 
     HttpRoutes.of[IO] {
@@ -30,7 +34,7 @@ object PaymentClientSuite extends SimpleIOSuite with Checkers {
         val client = Client.fromHttpApp(routes(Ok(id)))
 
         PaymentClient
-          .make[IO](client)
+          .make[IO](config, client)
           .process(payment)
           .map(expect.same(id, _))
     }
@@ -42,7 +46,7 @@ object PaymentClientSuite extends SimpleIOSuite with Checkers {
         val client = Client.fromHttpApp(routes(Conflict(id)))
 
         PaymentClient
-          .make[IO](client)
+          .make[IO](config, client)
           .process(payment)
           .map(expect.same(id, _))
     }
@@ -53,7 +57,7 @@ object PaymentClientSuite extends SimpleIOSuite with Checkers {
       val client = Client.fromHttpApp(routes(InternalServerError()))
 
       PaymentClient
-        .make[IO](client)
+        .make[IO](config, client)
         .process(payment)
         .attempt
         .map {

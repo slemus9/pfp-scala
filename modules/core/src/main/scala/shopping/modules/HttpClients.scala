@@ -18,6 +18,6 @@ object HttpClients {
     client: Client[F]
   ) = new HttpClients[F] {
 
-    def payment: PaymentClient[F] = PaymentClient.make(client)
+    def payment: PaymentClient[F] = PaymentClient.make(config, client)
   }
 }

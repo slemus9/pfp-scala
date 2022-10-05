@@ -7,13 +7,14 @@ import eu.timepit.refined.collection.{Size, NonEmpty}
 import eu.timepit.refined.generic.Equal
 import eu.timepit.refined.boolean.And
 import io.estatico.newtype.macros.newtype
-import shopping.utils.circe.refined.codecOf
 import shopping.utils.refined.numeric.IntegralOfSize
 import io.circe.generic.semiauto.deriveCodec
 import io.circe.{Encoder, Decoder, Codec}
+import io.circe.refined._
 import cats.syntax.either._
 import derevo.derive
 import derevo.cats.show
+import shopping.utils.circe.CirceCodec
 
 object checkout {
 
@@ -26,15 +27,17 @@ object checkout {
 
   type CardExpirationPred = Size[Equal[4]] And ValidInt
 
-  type CardCVVPred = Equal[3]
+  type CardCVVPred = IntegralOfSize[3]
 
   // Models
   @derive(show)
   @newtype final case class CardName (value: String Refined CardNamePred)
 
   object CardName {
-    implicit val jsonCodec: Codec[CardName] =
-      codecOf[String, CardNamePred].iemap (CardName(_).asRight) (_.value)
+    implicit val jsonCodec: Codec[CardName] = 
+      CirceCodec.from[String Refined CardNamePred, CardName](
+        CardName(_), _.value
+      )
   }
 
   @derive(show)
@@ -42,7 +45,9 @@ object checkout {
 
   object CardNumber {
     implicit val jsonCodec: Codec[CardNumber] =
-      codecOf[Long, CardNumberPred].iemap (CardNumber(_).asRight) (_.value)
+      CirceCodec.from[Long Refined CardNumberPred, CardNumber](
+        CardNumber(_), _.value
+      )
   }
 
   @derive(show)
@@ -50,7 +55,9 @@ object checkout {
 
   object CardExpiration {
     implicit val jsonCodec = 
-      codecOf[String, CardExpirationPred].iemap (CardExpiration(_).asRight) (_.value)
+      CirceCodec.from[String Refined CardExpirationPred, CardExpiration](
+        CardExpiration(_), _.value
+      )
   }
 
   @derive(show)
@@ -58,7 +65,9 @@ object checkout {
 
   object CardCVV {
     implicit val jsonCodec =
-      codecOf[Int, CardCVVPred].iemap (CardCVV(_).asRight) (_.value)
+      CirceCodec.from[Int Refined CardCVVPred, CardCVV](
+        CardCVV(_), _.value
+      )
   } 
 
   @derive(show)
@@ -66,7 +75,7 @@ object checkout {
     name: CardName,
     number: CardNumber,
     expiration: CardExpiration,
-    cvv: CardCVV
+    ccv: CardCVV
   )
 
   object Card {
