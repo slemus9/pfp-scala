@@ -45,10 +45,8 @@ lazy val core = (project in file("modules/core"))
       compilerPlugin(
         "org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full
       ),
-      //"org.typelevel" %% "cats-core"             % "2.8.0",
       "org.typelevel" %% "cats-mtl"              % catsMltVersion,
       "com.github.cb372" %% "cats-retry" % catsRetryVersion,
-      //"co.fs2"        %% "fs2-core"              % "3.2.13",
       "dev.optics"    %% "monocle-core"          % monocleVersion,
       "dev.optics"    %% "monocle-macro"         % monocleVersion,
       "io.estatico"   %% "newtype"               % newtypeVersion,
@@ -57,7 +55,6 @@ lazy val core = (project in file("modules/core"))
       "tf.tofu"       %% "derevo-core"           % derevoVersion,
       "tf.tofu"       %% "derevo-cats"           % derevoVersion,
       "tf.tofu"       %% "derevo-cats-tagless"   % derevoVersion,
-      //"tf.tofu"       %% "derevo-circe-magnolia" % derevoVersion,
       "tf.tofu"       %% "tofu-core-higher-kind" % tofuCoreHKVersion,
       "org.typelevel"  %% "squants"  % squantVersion,
       "org.typelevel" %% "log4cats-slf4j" % log4catsVersion,
